@@ -7,8 +7,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-#environment variables
+# Environment variables — never commit real values.
+# (Vite inlines VITE_* vars into the public bundle, so keep secrets out entirely.)
 .env
+.env.*
+!.env.example
 
 node_modules
 dist
