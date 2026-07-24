@@ -9,6 +9,8 @@ import {
 import PageHeader from "../../components/common/PageHeader";
 import Card from "../../components/common/Card";
 import StatCard from "../../components/cards/StatCard";
+import Alert from "../../components/common/Alert";
+import Button from "../../components/common/Button";
 import Select from "../../components/common/Select";
 import DataTable from "../../components/common/DataTable";
 import { StockBadge } from "../../components/common/Badge";
@@ -34,19 +36,28 @@ export default function Reports() {
   const [best, setBest] = useState([]);
   const [lowStock, setLowStock] = useState([]);
 
-  useEffect(() => {
-    reportsApi.dailySales(days).then((d) => setDaily(asResults(d))).catch(() => {});
-    reportsApi.profit(days).then(setProfit).catch(() => {});
-  }, [days]);
+  // Track load failures so we can show a retry banner instead of a blank chart.
+  const [hasError, setHasError] = useState(false);
+  const [reloadTick, setReloadTick] = useState(0);
+  const retry = () => {
+    setHasError(false);
+    setReloadTick((t) => t + 1);
+  };
+  const onFail = () => setHasError(true);
 
   useEffect(() => {
-    reportsApi.monthlySales(months).then((d) => setMonthly(asResults(d))).catch(() => {});
-  }, [months]);
+    reportsApi.dailySales(days).then((d) => setDaily(asResults(d))).catch(onFail);
+    reportsApi.profit(days).then(setProfit).catch(onFail);
+  }, [days, reloadTick]);
 
   useEffect(() => {
-    reportsApi.bestSelling(10).then((d) => setBest(asResults(d))).catch(() => {});
-    reportsApi.lowStock().then((d) => setLowStock(asResults(d))).catch(() => {});
-  }, []);
+    reportsApi.monthlySales(months).then((d) => setMonthly(asResults(d))).catch(onFail);
+  }, [months, reloadTick]);
+
+  useEffect(() => {
+    reportsApi.bestSelling(10).then((d) => setBest(asResults(d))).catch(onFail);
+    reportsApi.lowStock().then((d) => setLowStock(asResults(d))).catch(onFail);
+  }, [reloadTick]);
 
   const dailyData = daily.map((r) => ({
     label: String(pick(r, ["date", "day", "label"], "")).slice(5),
@@ -75,6 +86,20 @@ export default function Reports() {
         title="Reports"
         subtitle="Sales, profit, and inventory analytics."
       />
+
+      {hasError && (
+        <Alert
+          variant="error"
+          title="Some reports couldn't be loaded"
+          action={
+            <Button size="sm" variant="subtle" onClick={retry}>
+              Retry
+            </Button>
+          }
+        >
+          Check your connection and try again.
+        </Alert>
+      )}
 
       <div className="stat-grid">
         <StatCard label="Revenue" value={formatCurrency(revenue)} icon={<FiDollarSign />} tone="blue" hint={`Last ${days} days`} />

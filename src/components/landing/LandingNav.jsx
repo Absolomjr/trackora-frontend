@@ -1,0 +1,112 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { LuBoxes, LuMenu, LuX } from "react-icons/lu";
+
+import useAuth from "../../hooks/useAuth";
+import { LEAD_KIND } from "../../api/leadsApi";
+import { useLeadModal } from "./leadModal";
+
+const LINKS = [
+  { href: "/#features", label: "Features" },
+  { href: "/#how", label: "How it works" },
+  { href: "/#faq", label: "FAQ" },
+  { href: "/pricing", label: "Pricing" },
+];
+
+export default function LandingNav() {
+  const { isAuthenticated } = useAuth();
+  const { openLead } = useLeadModal();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  return (
+    <header className={`lnav ${scrolled ? "lnav--scrolled" : ""}`}>
+      <div className="lnav__inner">
+        <Link to="/" className="lnav__brand" onClick={closeMenu}>
+          <span className="lnav__logo"><LuBoxes /></span>
+          Trackora
+        </Link>
+
+        <nav className="lnav__links">
+          {LINKS.map((l) =>
+            l.href.includes("#") ? (
+              <a key={l.href} href={l.href} className="lnav__link">{l.label}</a>
+            ) : (
+              <Link key={l.href} to={l.href} className="lnav__link">{l.label}</Link>
+            )
+          )}
+        </nav>
+
+        <div className="lnav__actions">
+          {isAuthenticated ? (
+            <Link to="/dashboard" className="landing-btn landing-btn--primary">
+              Go to dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="lnav__signin">Sign in</Link>
+              <button
+                className="landing-btn landing-btn--primary"
+                onClick={() => openLead(LEAD_KIND.SIGNUP, "nav")}
+              >
+                Create account
+              </button>
+            </>
+          )}
+        </div>
+
+        <button
+          className="lnav__menu-btn"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+        >
+          {menuOpen ? <LuX /> : <LuMenu />}
+        </button>
+      </div>
+
+      {menuOpen && (
+        <div className="lnav__mobile">
+          {LINKS.map((l) =>
+            l.href.includes("#") ? (
+              <a key={l.href} href={l.href} className="lnav__mobile-link" onClick={closeMenu}>
+                {l.label}
+              </a>
+            ) : (
+              <Link key={l.href} to={l.href} className="lnav__mobile-link" onClick={closeMenu}>
+                {l.label}
+              </Link>
+            )
+          )}
+          <div className="lnav__mobile-actions">
+            {isAuthenticated ? (
+              <Link to="/dashboard" className="landing-btn landing-btn--primary landing-btn--lg" onClick={closeMenu}>
+                Go to dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="landing-btn landing-btn--secondary landing-btn--lg" onClick={closeMenu}>
+                  Sign in
+                </Link>
+                <button
+                  className="landing-btn landing-btn--primary landing-btn--lg"
+                  onClick={() => { closeMenu(); openLead(LEAD_KIND.SIGNUP, "nav-mobile"); }}
+                >
+                  Create account
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}

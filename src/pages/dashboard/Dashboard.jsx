@@ -12,6 +12,8 @@ import {
 import PageHeader from "../../components/common/PageHeader";
 import Card from "../../components/common/Card";
 import StatCard from "../../components/cards/StatCard";
+import Alert from "../../components/common/Alert";
+import Button from "../../components/common/Button";
 import { LoadingBlock } from "../../components/common/Spinner";
 import DataTable from "../../components/common/DataTable";
 import { StockBadge } from "../../components/common/Badge";
@@ -40,12 +42,20 @@ function asArray(value) {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { data, loading } = useFetch(() => reportsApi.dashboard(), []);
-  const { data: daily } = useFetch(() => reportsApi.dailySales(14), []);
-  const { data: best } = useFetch(() => reportsApi.bestSelling(5), []);
-  const { data: lowStock } = useFetch(() => reportsApi.lowStock(), []);
+  const { data, loading, error, refetch } = useFetch(() => reportsApi.dashboard(), []);
+  const daily = useFetch(() => reportsApi.dailySales(14), []);
+  const best = useFetch(() => reportsApi.bestSelling(5), []);
+  const lowStock = useFetch(() => reportsApi.lowStock(), []);
 
   if (loading) return <LoadingBlock label="Loading dashboard…" />;
+
+  // Surface secondary-fetch failures instead of rendering silent empty charts.
+  const partialError = daily.error || best.error || lowStock.error;
+  const retryPartials = () => {
+    if (daily.error) daily.refetch();
+    if (best.error) best.refetch();
+    if (lowStock.error) lowStock.refetch();
+  };
 
   const d = data || {};
 
@@ -57,18 +67,18 @@ export default function Dashboard() {
   const totalProfit = pick(d, ["total_profit", "profit", "profit_today"]);
   const totalCustomers = pick(d, ["total_customers", "customers", "customer_count"]);
 
-  const dailyData = asArray(daily).map((row) => ({
+  const dailyData = asArray(daily.data).map((row) => ({
     label: String(pick(row, ["date", "day", "label"], "")).slice(5),
     value: Number(pick(row, ["total", "total_sales", "sales", "revenue", "amount"])),
   }));
 
-  const bestData = asArray(best).map((row) => ({
+  const bestData = asArray(best.data).map((row) => ({
     label: pick(row, ["product_name", "name", "product"], "Product"),
     value: Number(pick(row, ["total_quantity", "quantity_sold", "units_sold", "quantity"])),
     sub: `${pick(row, ["total_quantity", "quantity_sold", "units_sold", "quantity"])} sold`,
   }));
 
-  const lowStockRows = asArray(lowStock).slice(0, 6);
+  const lowStockRows = asArray(lowStock.data).slice(0, 6);
 
   return (
     <div>
@@ -76,6 +86,34 @@ export default function Dashboard() {
         title={`Welcome back${user?.full_name ? `, ${user.full_name.split(" ")[0]}` : ""}`}
         subtitle="Here's what's happening in your store today."
       />
+
+      {error && (
+        <Alert
+          variant="error"
+          title="Couldn't load your dashboard"
+          action={
+            <Button size="sm" variant="subtle" onClick={refetch}>
+              Retry
+            </Button>
+          }
+        >
+          Check your connection and try again.
+        </Alert>
+      )}
+
+      {partialError && (
+        <Alert
+          variant="warning"
+          title="Some data couldn't be loaded"
+          action={
+            <Button size="sm" variant="subtle" onClick={retryPartials}>
+              Retry
+            </Button>
+          }
+        >
+          Part of your dashboard is out of date.
+        </Alert>
+      )}
 
       <div className="stat-grid">
         <StatCard

@@ -92,7 +92,11 @@ api.interceptors.response.use(
         refresh,
       });
       const newAccess = data.access;
-      tokenStore.set({ access: newAccess });
+      // The backend rotates refresh tokens (ROTATE_REFRESH_TOKENS=True), so it
+      // returns a fresh refresh token too. Persist it, otherwise the stored
+      // refresh token's 7-day window never extends and active users get logged
+      // out on a fixed schedule.
+      tokenStore.set({ access: newAccess, refresh: data.refresh });
       flushQueue(null, newAccess);
       original.headers.Authorization = `Bearer ${newAccess}`;
       return api(original);
