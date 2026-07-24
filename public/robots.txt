@@ -1,0 +1,26 @@
+# Trackora — https://trackora.app
+User-agent: *
+Allow: /$
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /demo
+Allow: /privacy
+Allow: /terms
+
+# Keep the authenticated app out of search results.
+Disallow: /dashboard
+Disallow: /products
+Disallow: /categories
+Disallow: /suppliers
+Disallow: /stock-in
+Disallow: /stock-out
+Disallow: /orders
+Disallow: /customers
+Disallow: /reports
+Disallow: /users
+Disallow: /profile
+Disallow: /change-password
+Disallow: /login
+
+Sitemap: https://trackora.app/sitemap.xml

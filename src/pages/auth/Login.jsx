@@ -1,13 +1,7 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  FiBox,
-  FiMail,
-  FiLock,
-  FiTrendingUp,
-  FiShield,
-  FiPackage,
-} from "react-icons/fi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FiMail, FiLock } from "react-icons/fi";
+import { LuBoxes } from "react-icons/lu";
 
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
@@ -35,9 +29,7 @@ export default function Login() {
     } catch (err) {
       const { message } = parseApiError(err);
       setError(
-        err?.response?.status === 401
-          ? "Invalid email or password."
-          : message
+        err?.response?.status === 401 ? "Invalid email or password." : message
       );
     } finally {
       setLoading(false);
@@ -45,33 +37,13 @@ export default function Login() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-hero">
-        <div className="login-hero__brand">
-          <span className="login-hero__brand-icon">
-            <FiBox />
-          </span>
+    <div className="auth-simple">
+      <div className="auth-card">
+        <Link to="/" className="auth-brand">
+          <span className="auth-brand__logo"><LuBoxes /></span>
           Trackora
-        </div>
-        <h2>Run your hardware store with confidence.</h2>
-        <p>
-          Track inventory, record stock movements, process sales, and watch your
-          numbers — all in one place.
-        </p>
-        <div className="login-hero__features">
-          <div className="login-hero__feature">
-            <FiPackage /> Real-time inventory & low-stock alerts
-          </div>
-          <div className="login-hero__feature">
-            <FiTrendingUp /> Sales, profit & best-seller reports
-          </div>
-          <div className="login-hero__feature">
-            <FiShield /> Role-based access for your team
-          </div>
-        </div>
-      </div>
+        </Link>
 
-      <div className="login-form-side">
         <form className="login-form" onSubmit={onSubmit}>
           <h1>Welcome back</h1>
           <p className="login-form__sub">Sign in to your Trackora account.</p>
@@ -102,16 +74,20 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Button
-            type="submit"
-            block
-            loading={loading}
-            className="mt"
-            style={{ marginTop: 8 }}
-          >
+          <div className="login-form__row">
+            <Link to="/forgot-password" className="login-form__link">
+              Forgot password?
+            </Link>
+          </div>
+
+          <Button type="submit" block loading={loading} style={{ marginTop: 8 }}>
             Sign in
           </Button>
         </form>
+
+        <p className="auth-alt">
+          New to Trackora? <Link to="/demo">Book a demo</Link>
+        </p>
       </div>
     </div>
   );

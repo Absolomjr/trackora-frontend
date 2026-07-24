@@ -1,5 +1,5 @@
-import { LoadingBlock } from "./Spinner";
 import EmptyState from "./EmptyState";
+import { TableSkeleton } from "./Skeleton";
 
 /**
  * Lightweight table renderer.
@@ -25,7 +25,7 @@ export default function DataTable({
   emptyAction,
   onRowClick,
 }) {
-  if (loading) return <LoadingBlock />;
+  if (loading) return <TableSkeleton columns={columns} />;
 
   if (!rows || rows.length === 0) {
     return (

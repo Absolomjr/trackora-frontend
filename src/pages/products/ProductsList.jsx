@@ -127,7 +127,7 @@ export default function ProductsList() {
       render: (p) => (
         <div className="product-thumb-cell">
           {p.image ? (
-            <img src={p.image} alt={p.name} className="thumb" />
+            <img src={p.image} alt={p.name} className="thumb" loading="lazy" decoding="async" />
           ) : (
             <span className="thumb thumb--placeholder">
               <FiBox />

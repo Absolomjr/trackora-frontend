@@ -1,0 +1,18 @@
+{
+  "name": "Trackora — Inventory for hardware stores",
+  "short_name": "Trackora",
+  "description": "Track your stock, sales and staff in one place.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f1210",
+  "theme_color": "#166534",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
