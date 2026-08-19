@@ -17,7 +17,9 @@ const users = createResource("/auth/users");
 
 const authApi = {
   // --- Session ---
-  login: async (email, password) => {
+  login: async (email, password, remember = true) => {
+    // Set the storage preference before persisting tokens.
+    tokenStore.setRemember(remember);
     const { data } = await api.post("/auth/login/", { email, password });
     tokenStore.set({ access: data.access, refresh: data.refresh });
     return data; // { access, refresh, user }

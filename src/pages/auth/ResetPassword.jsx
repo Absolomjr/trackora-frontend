@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { FiLock } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import { LuCircleCheckBig, LuCircleAlert } from "react-icons/lu";
 import { toast } from "react-toastify";
 
 import Button from "../../components/common/Button";
-import Input from "../../components/common/Input";
+import PasswordInput from "../../components/common/PasswordInput";
+import PasswordStrength from "../../components/common/PasswordStrength";
+import { TrackoraWordmark } from "../../components/common/TrackoraLogo";
 import authApi from "../../api/authApi";
 import parseApiError from "../../utils/apiError";
 
@@ -28,18 +30,16 @@ export default function ResetPassword() {
     e.preventDefault();
     setErrors({});
     setMessage("");
-
     if (password !== confirm) {
       setErrors({ confirm: "Passwords do not match." });
       return;
     }
-
     setLoading(true);
     try {
       await authApi.confirmPasswordReset({ uid, token, new_password: password });
       setDone(true);
       toast.success("Password reset. You can now sign in.");
-      setTimeout(() => navigate("/login", { replace: true }), 2200);
+      setTimeout(() => navigate("/login", { replace: true }), 2000);
     } catch (err) {
       const { message: msg, fields } = parseApiError(err);
       setErrors(fields);
@@ -51,66 +51,78 @@ export default function ResetPassword() {
 
   if (!linkValid) {
     return (
-      <div className="auth-simple">
-        <div className="auth-card auth-done">
-          <div className="auth-done__icon auth-done__icon--warn"><LuCircleAlert /></div>
-          <h1>Invalid reset link</h1>
-          <p>This link is missing information or has been altered. Please request a new password-reset link.</p>
-          <Link to="/forgot-password" className="btn btn--primary btn--block">
-            Request a new link
-          </Link>
+      <div className="auth-page auth-page--tint-green">
+        <div className="auth-shell">
+          <TrackoraWordmark className="auth-logo" size={34} />
+          <div className="auth-card auth-done">
+            <div className="auth-done__icon auth-done__icon--warn"><LuCircleAlert /></div>
+            <h1>Invalid reset link</h1>
+            <p>This link is missing information or has been altered. Please request a new one.</p>
+            <Link to="/forgot-password" className="btn btn--primary btn--block">
+              Request a new link
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="auth-simple">
-      <div className="auth-card">
-        {done ? (
-          <div className="auth-done">
-            <div className="auth-done__icon"><LuCircleCheckBig /></div>
-            <h1>Password reset</h1>
-            <p>You're all set. Taking you to the sign-in page…</p>
-          </div>
-        ) : (
-          <form className="login-form" onSubmit={onSubmit}>
-            <h1>Choose a new password</h1>
-            <p className="login-form__sub">Pick a strong password you don't use elsewhere.</p>
+    <div className="auth-page auth-page--tint-green">
+      <div className="auth-shell">
+        <TrackoraWordmark className="auth-logo" size={34} />
+        <div className="auth-card">
+          {done ? (
+            <div className="auth-done">
+              <div className="auth-done__icon"><LuCircleCheckBig /></div>
+              <h1>Password reset</h1>
+              <p>You're all set. Taking you to the sign-in page…</p>
+            </div>
+          ) : (
+            <>
+              <div className="auth-card__head">
+                <h1>Reset password</h1>
+                <p>Create a strong new password for your Trackora account.</p>
+              </div>
 
-            {message && <div className="alert alert--error">{message}</div>}
+              <form onSubmit={onSubmit} noValidate>
+                {message && <div className="alert alert--error">{message}</div>}
 
-            <Input
-              label="New password"
-              type="password"
-              name="new_password"
-              required
-              autoComplete="new-password"
-              placeholder="••••••••"
-              icon={<FiLock />}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={errors.new_password}
-              hint="At least 8 characters."
-            />
-            <Input
-              label="Confirm new password"
-              type="password"
-              name="confirm"
-              required
-              autoComplete="new-password"
-              placeholder="••••••••"
-              icon={<FiLock />}
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              error={errors.confirm}
-            />
+                <PasswordInput
+                  label="New password"
+                  name="new_password"
+                  required
+                  autoComplete="new-password"
+                  placeholder="Enter new password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={errors.new_password}
+                />
+                <PasswordStrength value={password} />
+                <p className="auth-hint">Use 8+ characters with a mix of letters, numbers &amp; symbols.</p>
 
-            <Button type="submit" block loading={loading} style={{ marginTop: 8 }}>
-              Reset password
-            </Button>
-          </form>
-        )}
+                <PasswordInput
+                  label="Confirm new password"
+                  name="confirm"
+                  required
+                  autoComplete="new-password"
+                  placeholder="Confirm new password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  error={errors.confirm}
+                />
+
+                <Button type="submit" block loading={loading} icon={!loading && <FiArrowRight />} className="btn--iconafter">
+                  Reset password
+                </Button>
+              </form>
+            </>
+          )}
+        </div>
+
+        <p className="auth-alt">
+          Remember your password? <Link to="/login">Sign in</Link>
+        </p>
       </div>
     </div>
   );

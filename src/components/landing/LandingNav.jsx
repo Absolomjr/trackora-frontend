@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { LuBoxes, LuMenu, LuX } from "react-icons/lu";
+import { LuMenu, LuX } from "react-icons/lu";
 
 import useAuth from "../../hooks/useAuth";
-import { LEAD_KIND } from "../../api/leadsApi";
-import { useLeadModal } from "./leadModal";
+import TrackoraLogo from "../common/TrackoraLogo";
 
 const LINKS = [
   { href: "/#features", label: "Features" },
@@ -15,7 +14,6 @@ const LINKS = [
 
 export default function LandingNav() {
   const { isAuthenticated } = useAuth();
-  const { openLead } = useLeadModal();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -32,7 +30,7 @@ export default function LandingNav() {
     <header className={`lnav ${scrolled ? "lnav--scrolled" : ""}`}>
       <div className="lnav__inner">
         <Link to="/" className="lnav__brand" onClick={closeMenu}>
-          <span className="lnav__logo"><LuBoxes /></span>
+          <TrackoraLogo size={30} />
           Trackora
         </Link>
 
@@ -54,12 +52,9 @@ export default function LandingNav() {
           ) : (
             <>
               <Link to="/login" className="lnav__signin">Sign in</Link>
-              <button
-                className="landing-btn landing-btn--primary"
-                onClick={() => openLead(LEAD_KIND.SIGNUP, "nav")}
-              >
+              <Link to="/signup" className="landing-btn landing-btn--primary">
                 Create account
-              </button>
+              </Link>
             </>
           )}
         </div>
@@ -96,12 +91,9 @@ export default function LandingNav() {
                 <Link to="/login" className="landing-btn landing-btn--secondary landing-btn--lg" onClick={closeMenu}>
                   Sign in
                 </Link>
-                <button
-                  className="landing-btn landing-btn--primary landing-btn--lg"
-                  onClick={() => { closeMenu(); openLead(LEAD_KIND.SIGNUP, "nav-mobile"); }}
-                >
+                <Link to="/signup" className="landing-btn landing-btn--primary landing-btn--lg" onClick={closeMenu}>
                   Create account
-                </button>
+                </Link>
               </>
             )}
           </div>

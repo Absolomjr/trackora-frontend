@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LuBoxes } from "react-icons/lu";
+import TrackoraLogo from "../common/TrackoraLogo";
 
 const COLUMNS = [
   {
@@ -40,7 +40,7 @@ export default function LandingFooter() {
       <div className="lfooter__inner">
         <div className="lfooter__brand-col">
           <span className="lfooter__brand">
-            <span className="lnav__logo"><LuBoxes /></span>
+            <TrackoraLogo size={28} />
             Trackora
           </span>
           <p className="lfooter__tagline">

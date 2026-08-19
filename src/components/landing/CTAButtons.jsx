@@ -1,28 +1,20 @@
-import { LEAD_KIND } from "../../api/leadsApi";
-import { useLeadModal } from "./leadModal";
+import { Link } from "react-router-dom";
+import { FiArrowRight } from "react-icons/fi";
 
 /**
- * The primary/secondary CTA pair used across the marketing site. `source`
- * names the section it sits in so we can see which part of the page converts.
+ * Primary/secondary CTA pair used across the marketing site.
+ * Primary → create-account (request access) page; secondary → book a demo.
  */
-export default function CTAButtons({ source = "", align = "start", size = "lg" }) {
-  const { openLead } = useLeadModal();
+export default function CTAButtons({ align = "start", size = "lg" }) {
   const btn = size === "lg" ? "landing-btn landing-btn--lg" : "landing-btn";
-
   return (
     <div className={`cta-group cta-group--${align}`}>
-      <button
-        className={`${btn} landing-btn--primary`}
-        onClick={() => openLead(LEAD_KIND.SIGNUP, source)}
-      >
-        Create your free account
-      </button>
-      <button
-        className={`${btn} landing-btn--secondary`}
-        onClick={() => openLead(LEAD_KIND.DEMO, source)}
-      >
-        Book a live demo
-      </button>
+      <Link to="/signup" className={`${btn} landing-btn--primary`}>
+        Start free trial <FiArrowRight />
+      </Link>
+      <Link to="/demo" className={`${btn} landing-btn--secondary`}>
+        Book a demo
+      </Link>
     </div>
   );
 }

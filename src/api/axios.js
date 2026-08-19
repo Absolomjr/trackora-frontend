@@ -11,18 +11,54 @@ const api = axios.create({
   },
 });
 
-// Token helpers — single source of truth for reading/writing tokens.
+// Token helpers — single source of truth for reading/writing auth state.
+// "Remember me" chooses the storage backend: localStorage persists across
+// browser restarts; sessionStorage is cleared when the tab closes. Reads check
+// both so either mode works transparently.
+function chosenStore() {
+  return localStorage.getItem(STORAGE.REMEMBER) === "false"
+    ? sessionStorage
+    : localStorage;
+}
+function readEither(key) {
+  return sessionStorage.getItem(key) ?? localStorage.getItem(key);
+}
+
 export const tokenStore = {
-  getAccess: () => localStorage.getItem(STORAGE.ACCESS),
-  getRefresh: () => localStorage.getItem(STORAGE.REFRESH),
+  remember: () => localStorage.getItem(STORAGE.REMEMBER) !== "false",
+  setRemember: (value) =>
+    localStorage.setItem(STORAGE.REMEMBER, value ? "true" : "false"),
+
+  getAccess: () => readEither(STORAGE.ACCESS),
+  getRefresh: () => readEither(STORAGE.REFRESH),
   set: ({ access, refresh }) => {
-    if (access) localStorage.setItem(STORAGE.ACCESS, access);
-    if (refresh) localStorage.setItem(STORAGE.REFRESH, refresh);
+    const store = chosenStore();
+    if (access) store.setItem(STORAGE.ACCESS, access);
+    if (refresh) store.setItem(STORAGE.REFRESH, refresh);
   },
+
+  getUser: () => {
+    try {
+      const raw = readEither(STORAGE.USER);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  },
+  setUser: (user) => {
+    if (user) chosenStore().setItem(STORAGE.USER, JSON.stringify(user));
+    else {
+      localStorage.removeItem(STORAGE.USER);
+      sessionStorage.removeItem(STORAGE.USER);
+    }
+  },
+
   clear: () => {
-    localStorage.removeItem(STORAGE.ACCESS);
-    localStorage.removeItem(STORAGE.REFRESH);
-    localStorage.removeItem(STORAGE.USER);
+    [localStorage, sessionStorage].forEach((s) => {
+      s.removeItem(STORAGE.ACCESS);
+      s.removeItem(STORAGE.REFRESH);
+      s.removeItem(STORAGE.USER);
+    });
   },
 };
 
