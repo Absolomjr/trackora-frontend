@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiMail, FiLock } from "react-icons/fi";
-import { LuBoxes } from "react-icons/lu";
+import { FiMail, FiArrowRight } from "react-icons/fi";
 
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
+import PasswordInput from "../../components/common/PasswordInput";
+import Checkbox from "../../components/common/Checkbox";
+import { TrackoraWordmark } from "../../components/common/TrackoraLogo";
 import useAuth from "../../hooks/useAuth";
 import parseApiError from "../../utils/apiError";
 
@@ -16,6 +18,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +27,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await login(email.trim(), password);
+      await login(email.trim(), password, remember);
       navigate(from, { replace: true });
     } catch (err) {
       const { message } = parseApiError(err);
@@ -37,56 +40,58 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-simple">
-      <div className="auth-card">
-        <Link to="/" className="auth-brand">
-          <span className="auth-brand__logo"><LuBoxes /></span>
-          Trackora
-        </Link>
+    <div className="auth-page auth-page--tint-green">
+      <div className="auth-shell">
+        <TrackoraWordmark className="auth-logo" size={34} />
 
-        <form className="login-form" onSubmit={onSubmit}>
-          <h1>Welcome back</h1>
-          <p className="login-form__sub">Sign in to your Trackora account.</p>
-
-          {error && <div className="alert alert--error">{error}</div>}
-
-          <Input
-            label="Email address"
-            type="email"
-            name="email"
-            required
-            autoComplete="email"
-            placeholder="you@example.com"
-            icon={<FiMail />}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            required
-            autoComplete="current-password"
-            placeholder="••••••••"
-            icon={<FiLock />}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <div className="login-form__row">
-            <Link to="/forgot-password" className="login-form__link">
-              Forgot password?
-            </Link>
+        <div className="auth-card">
+          <div className="auth-card__head">
+            <h1>Welcome back</h1>
+            <p>Sign in to access your Trackora account.</p>
           </div>
 
-          <Button type="submit" block loading={loading} style={{ marginTop: 8 }}>
-            Sign in
-          </Button>
-        </form>
+          <form onSubmit={onSubmit} noValidate>
+            {error && <div className="alert alert--error">{error}</div>}
+
+            <Input
+              label="Email address"
+              type="email"
+              name="email"
+              required
+              autoComplete="email"
+              placeholder="name@yourstore.com"
+              icon={<FiMail />}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <PasswordInput
+              label="Password"
+              name="password"
+              required
+              autoComplete="current-password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              labelRight={
+                <Link to="/forgot-password" className="auth-link">
+                  Forgot password?
+                </Link>
+              }
+            />
+
+            <div className="auth-row">
+              <Checkbox checked={remember} onChange={setRemember} label="Remember me" />
+            </div>
+
+            <Button type="submit" block loading={loading} icon={!loading && <FiArrowRight />} className="btn--iconafter">
+              Sign in
+            </Button>
+          </form>
+        </div>
 
         <p className="auth-alt">
-          New to Trackora? <Link to="/demo">Book a demo</Link>
+          New to Trackora? <Link to="/signup">Create an account</Link>
         </p>
       </div>
     </div>

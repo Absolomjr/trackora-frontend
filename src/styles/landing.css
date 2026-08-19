@@ -185,6 +185,7 @@
   font-weight: 700;
   margin-bottom: 20px;
 }
+.hero__headline-accent { color: var(--primary-600); }
 .hero__subhead { font-size: 19px; line-height: 1.6; color: var(--text-muted); margin: 0 0 26px; }
 .hero__bullets { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 12px; }
 .hero__bullet { display: flex; gap: 11px; align-items: flex-start; font-size: 15.5px; line-height: 1.5; }

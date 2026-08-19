@@ -4,6 +4,7 @@ const get = (path, params) =>
   api.get(`/reports/${path}/`, { params }).then((r) => r.data);
 
 const reportsApi = {
+  overview: () => get("overview"),
   dashboard: () => get("dashboard"),
   lowStock: () => get("low-stock"),
   dailySales: (days = 30) => get("daily-sales", { days }),

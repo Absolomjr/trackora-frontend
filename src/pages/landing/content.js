@@ -16,17 +16,17 @@ import {
 } from "react-icons/lu";
 
 export const HERO = {
-  eyebrow: "Inventory software for hardware stores",
-  headline: "Know exactly what's in your store — without counting it again.",
+  eyebrow: "Inventory simplified. Profits maximized.",
+  headlineLead: "Modern inventory for modern ",
+  headlineAccent: "hardware stores.",
   subheadline:
-    "Stock, sales and staff in one simple system. Always know what you have, what's selling and what's running low — from the counter or your phone.",
+    "Trackora helps hardware retailers track stock, sales and purchases in real time — so you can stop guessing and start growing.",
   bullets: [
-    { title: "Less chaos at the counter", text: "Sell in seconds; stock updates itself." },
-    { title: "Fewer stockouts", text: "Get alerted before you run out." },
-    { title: "Clear stock visibility", text: "Check the back room without leaving the counter." },
-    { title: "Staff ready on day one", text: "Simple enough to learn in minutes." },
+    { title: "Real-time stock visibility", text: "" },
+    { title: "Reduce stockouts and overstock", text: "" },
+    { title: "Stronger margins, happier customers", text: "" },
   ],
-  ctaSupport: "No card needed. Set up in under an hour.",
+  ctaSupport: "",
 };
 
 export const TRUST_ITEMS = [

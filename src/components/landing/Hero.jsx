@@ -46,20 +46,23 @@ export default function Hero() {
       <div className="hero__inner">
         <div className="hero__text">
           <span className="hero__eyebrow">{HERO.eyebrow}</span>
-          <h1 className="hero__headline">{HERO.headline}</h1>
+          <h1 className="hero__headline">
+            {HERO.headlineLead}
+            <span className="hero__headline-accent">{HERO.headlineAccent}</span>
+          </h1>
           <p className="hero__subhead">{HERO.subheadline}</p>
 
           <ul className="hero__bullets">
             {HERO.bullets.map((b) => (
               <li key={b.title} className="hero__bullet">
                 <span className="hero__check"><LuCheck /></span>
-                <span><strong>{b.title}.</strong> {b.text}</span>
+                <span><strong>{b.title}</strong>{b.text ? `. ${b.text}` : ""}</span>
               </li>
             ))}
           </ul>
 
-          <CTAButtons source="hero" />
-          <p className="hero__support">{HERO.ctaSupport}</p>
+          <CTAButtons />
+          {HERO.ctaSupport && <p className="hero__support">{HERO.ctaSupport}</p>}
         </div>
 
         <HeroVisual />

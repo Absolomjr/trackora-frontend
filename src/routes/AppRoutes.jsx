@@ -19,6 +19,7 @@ const Privacy = lazy(() => import("../pages/landing/Privacy"));
 const Terms = lazy(() => import("../pages/landing/Terms"));
 
 const Login = lazy(() => import("../pages/auth/Login"));
+const CreateAccount = lazy(() => import("../pages/auth/CreateAccount"));
 const ForgotPassword = lazy(() => import("../pages/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("../pages/auth/ResetPassword"));
 
@@ -52,6 +53,7 @@ export default function AppRoutes() {
             <Route path="/terms" element={<Terms />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<CreateAccount />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 

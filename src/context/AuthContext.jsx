@@ -2,30 +2,16 @@ import { createContext, useCallback, useEffect, useMemo, useState } from "react"
 
 import authApi from "../api/authApi";
 import { setAuthFailureHandler, tokenStore } from "../api/axios";
-import { STORAGE } from "../utils/constants";
 
 export const AuthContext = createContext(null);
 
-function readStoredUser() {
-  try {
-    const raw = localStorage.getItem(STORAGE.USER);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(readStoredUser);
+  const [user, setUser] = useState(() => tokenStore.getUser());
   const [loading, setLoading] = useState(true);
 
   const persistUser = useCallback((nextUser) => {
     setUser(nextUser);
-    if (nextUser) {
-      localStorage.setItem(STORAGE.USER, JSON.stringify(nextUser));
-    } else {
-      localStorage.removeItem(STORAGE.USER);
-    }
+    tokenStore.setUser(nextUser);
   }, []);
 
   const logout = useCallback(() => {
@@ -34,8 +20,8 @@ export function AuthProvider({ children }) {
   }, [persistUser]);
 
   const login = useCallback(
-    async (email, password) => {
-      const data = await authApi.login(email, password);
+    async (email, password, remember = true) => {
+      const data = await authApi.login(email, password, remember);
       persistUser(data.user);
       return data.user;
     },
