@@ -1,9 +1,6 @@
 import EmptyState from "../common/EmptyState";
 
-/**
- * Horizontal progress bars — good for "best selling" / ranked lists.
- * `data` is an array of { label, value, sub }.
- */
+
 export default function HBarList({ data = [], formatValue }) {
   if (!data.length) return <EmptyState title="No data yet" />;
 

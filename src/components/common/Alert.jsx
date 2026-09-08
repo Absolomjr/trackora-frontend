@@ -7,10 +7,6 @@ const ICONS = {
   warning: FiAlertTriangle,
 };
 
-/**
- * Inline status banner. Used to surface load failures (with an optional
- * Retry action) instead of swallowing them silently.
- */
 export default function Alert({ variant = "info", title, children, action }) {
   const Icon = ICONS[variant] || FiInfo;
   return (

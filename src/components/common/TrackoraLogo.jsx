@@ -1,7 +1,4 @@
-/**
- * Trackora "T" mark — a 3D-extruded green block letter, matching the brand
- * mockups. `size` sets the pixel box; colours are fixed to the brand greens.
- */
+
 export default function TrackoraLogo({ size = 32, className = "" }) {
   return (
     <svg

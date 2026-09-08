@@ -1,9 +1,6 @@
 import EmptyState from "../common/EmptyState";
 
-/**
- * Minimal dependency-free bar chart.
- * `data` is an array of { label, value }. `color` is one of: blue|accent|green.
- */
+
 export default function BarChart({ data = [], color = "blue", formatValue }) {
   if (!data.length) {
     return <EmptyState title="No data for this period" />;
