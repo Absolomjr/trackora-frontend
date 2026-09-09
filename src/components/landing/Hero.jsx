@@ -5,9 +5,7 @@ import { HERO } from "../../pages/landing/content";
 import heroImage from "../../assets/hero-team.jpg";
 
 /**
- * Hero visual: the real photograph, framed, with two small live-data cards
- * floating over it so the shot reads as "software in the field", not stock art.
- */
+ * Hero visual: the real photograph, framed, with two small live-data cards*/
 function HeroVisual() {
   return (
     <div className="hero-visual" aria-hidden="true">

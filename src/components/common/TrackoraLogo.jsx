@@ -11,12 +11,6 @@ export default function TrackoraLogo({ size = 32, className = "" }) {
       role="img"
       aria-label="Trackora"
     >
-      {/* extruded depth */}
-      <path
-        d="M11 11 H43 V22 H31.5 V43 H21.5 V22 H11 Z"
-        fill="#14532d"
-      />
-      {/* front face */}
       <path
         d="M8 8 H40 V19 H28.5 V40 H18.5 V19 H8 Z"
         fill="#16a34a"
